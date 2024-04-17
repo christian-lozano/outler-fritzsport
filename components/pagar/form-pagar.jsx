@@ -61,155 +61,6 @@ const formData = {
   ],
 }
 
-const data = {
-  departamentos: [
-    "Amazonas",
-    "Ancash",
-    "Apurímac",
-    "Arequipa",
-    "Ayacucho",
-    "Cajamarca",
-    "Callao",
-    "Cuzco",
-    "Huancavelica",
-    "Huánuco",
-    "Ica",
-    "Junín",
-    "La_Libertad",
-    "Lambayeque",
-    "Lima",
-    "Loreto",
-    "Madre_de_Dios",
-    "Moquegua",
-    "Pasco",
-    "Piura",
-    "Puno",
-    "San_Martín",
-    "Tacna",
-    "Tumbes",
-    "Ucayali",
-  ],
-
-  amazonas_provincias: [
-    {
-      title: "Bagua",
-      distritos: [
-        "Aramango",
-        "Bagua",
-        "Copallin",
-        "El Parco",
-        "Imaza",
-        "La Peca",
-      ],
-    },
-    {
-      title: "Bongara",
-      distritos: [
-        "Chisquilla",
-        "Churuja",
-        "Corosha",
-        "Cuispes",
-        "Florida",
-        "Jazan",
-        "Jumbilla",
-        "Recta",
-        "San Carlos",
-        "Shipasbamba",
-        "Valera",
-        "Yambrabamba",
-      ],
-    },
-    {
-      title: "Chachapoyas",
-      distritos: [
-        "Asuncion",
-        "Bolsas",
-        "Chachapoyas",
-        "Cheto",
-        "Chiliquin",
-        "Chuquibamba",
-        "Granada",
-        "Huancas",
-        "La Jalca",
-        "Leimebamba",
-        "Levanto",
-        "Magdalena",
-        "Mariscal Castilla",
-        "MolinoPampa",
-        "Montevideo",
-        "Olleros",
-        "Quinjalca",
-        "San Francisco de Daguas",
-        "San Francisco de Maino",
-        "Soloco",
-        "Sonche",
-      ],
-    },
-    {
-      title: "Condorcanqui",
-      distritos: ["El Cenepa", "Nieva", "Rio Santiago"],
-    },
-    {
-      title: "Luya",
-      distritos: [
-        "Camporredondo",
-        "Cocabamba",
-        "Colcamar",
-        "Conila",
-        "Inguilpata",
-        "Lamud",
-        "Lonya Chico",
-        "Luya",
-        "Luya Viejo",
-        "Maria",
-        "Ocalli",
-        "Ocumal",
-        "Pisuquia",
-        "Providencia",
-        "San Cristobal",
-        "San Francisco del Yeso",
-        "San Jeronimo",
-        "San Juan de Lopecancha",
-        "Santa Catalina",
-        "Santo Tomas",
-        "Tingo",
-        "Trita",
-      ],
-    },
-    {
-      title: "Rodriguez de Mendoza",
-      distritos: ["Chirimoto", "Cochamal", "Huambo", "Limabamba"],
-    },
-    {
-      title: "Utcubamba",
-      distritos: [],
-    },
-  ],
-
-  ancash: [
-    "Aija",
-    "Antonio Raymondi",
-    "Asuncion",
-    "Bolognesi",
-    "Carhuaz",
-    "Carlos Fermin Fitzcarrald",
-    "Casma",
-    "Corongo",
-    "Huaraz",
-    "Huari",
-    "Huarmey",
-    "Huaylas",
-    "Mariscal Luzuriaga",
-    "Ocros",
-    "Pallasca",
-    "Pomabamba",
-    "Recuay",
-    "Santa",
-    "Sihuas",
-    "Yungay",
-  ],
-}
-
 function Loading({ disableLoadAddProduct = true }) {
   return (
     <Spinner
@@ -256,7 +107,10 @@ export default function FormPagar({ tipoEntrega }) {
     if (tipoEntrega === "recojo") {
       setPrecioDelibery(0)
     } else {
-      if (allValues.provincia === "Lima") {
+      if (
+        allValues.provincia === "ancon lima" &&
+        allValues.departamento === "Lima"
+      ) {
         setPrecioDelibery(10)
       } else {
         setPrecioDelibery(20)
@@ -291,23 +145,23 @@ export default function FormPagar({ tipoEntrega }) {
     setLoading(true)
     let dataPago = {
       productos: productosCantidad,
-      datosComprador: {
-        tipoEntrega: tipoEntrega,
-        razon: allValues.razon,
-        estado: allValues.estado,
-        nombre: allValues.nombre,
-        apellido: allValues.apellido,
-        email: allValues.email,
-        documento: allValues.documento,
-        telefono: allValues.telefono,
-        comprobante: allValues.comprobante,
-        direccion: allValues.direccion,
-        ruc: allValues.ruc,
-        distrito: allValues.distrito,
-        adicional: allValues.adicional,
-        provincia: allValues.provincia,
-        cartTotal: cartTotal + precioDelibery,
-      },
+      tipoEntrega: tipoEntrega,
+      id_mercado_pago: "01",
+      razon: allValues.razon,
+      estado: allValues.estado,
+      nombres: allValues.nombre,
+      apellido: allValues.apellido,
+      email: allValues.email,
+      documento: allValues.documento,
+      telefono: allValues.telefono,
+      comprobante: allValues.comprobante,
+      direccion: allValues.direccion,
+      ruc: allValues.ruc,
+      departamento:allValues.departamento,
+      distrito: allValues.distrito,
+      provincia: allValues.provincia,
+      adicional: allValues.adicional,
+      cartTotal: cartTotal + precioDelibery,
     }
 
     try {
@@ -323,41 +177,41 @@ export default function FormPagar({ tipoEntrega }) {
       })
       const data = await res.json()
 
-      if (res.status === 200) {
-        let dataEnvioMongoUser = {
-          tipoEntrega: tipoEntrega,
-          razon: allValues.razon,
-          id_payer: data.id_payer,
-          id_mercado_pago: "01",
-          estado: allValues.estado,
-          nombres: allValues.nombre,
-          apellidos: allValues.apellido,
-          email: allValues.email,
-          documento: allValues.documento,
-          cart_total: cartTotal + precioDelibery,
-          telefono: allValues.telefono,
-          departamento: allValues.departamento,
-          distrito: allValues.distrito,
-          provincia: allValues.provincia,
-          direccion: allValues.direccion,
-          comprobante: allValues.comprobante,
-          info_adicional: allValues.adicional,
-          ruc: allValues.ruc,
-          productos: productosCantidad,
-        }
+      // if (res.status === 200) {
+      //   let dataEnvioMongoUser = {
+      //     tipoEntrega: tipoEntrega,
+      //     razon: allValues.razon,
+      //     id_payer: data.id_payer,
+      //     id_mercado_pago: "01",
+      //     estado: allValues.estado,
+      //     nombres: allValues.nombre,
+      //     apellidos: allValues.apellido,
+      //     email: allValues.email,
+      //     documento: allValues.documento,
+      //     cart_total: cartTotal + precioDelibery,
+      //     telefono: allValues.telefono,
+      //     departamento: allValues.departamento,
+      //     distrito: allValues.distrito,
+      //     provincia: allValues.provincia,
+      //     direccion: allValues.direccion,
+      //     comprobante: allValues.comprobante,
+      //     info_adicional: allValues.adicional,
+      //     ruc: allValues.ruc,
+      //     productos: productosCantidad,
+      //   }
 
-        const resp = await fetch(`/api/mongo`, {
-          method: "POST",
-          body: JSON.stringify(dataEnvioMongoUser),
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-            "Access-Control-Allow-Headers": "*",
-          },
-        })
+      //   const resp = await fetch(`/api/mongo`, {
+      //     method: "POST",
+      //     body: JSON.stringify(dataEnvioMongoUser),
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       "Access-Control-Allow-Origin": "*",
+      //       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+      //       "Access-Control-Allow-Headers": "*",
+      //     },
+      //   })
 
-        if (resp.status === 200) {
+        if (res.status === 200) {
           router.push(data.url)
         }
         // const dato = await res.json()
@@ -367,7 +221,7 @@ export default function FormPagar({ tipoEntrega }) {
         // router.refresh()
         //test
         // alert(data.msg)
-      }
+      // }
       if (res.status === 401) {
         alert("Ingresa un Email Valido")
         setLoading(true)
@@ -413,7 +267,6 @@ export default function FormPagar({ tipoEntrega }) {
     // } else {
     //   setPrecioDelibery(20)
     // }
-    console.log(allValues)
   }, [allValues])
 
   const handlerDepartamento = (data, id) => {

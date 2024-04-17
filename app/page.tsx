@@ -108,14 +108,14 @@ export default async function Page({ searchParams }: Props) {
     } `
     )
     // console.log(priceecommerce)
-    return products
+    const productos = products.filter(
+      (el) =>
+        el.razonsocial !== "fritzsport" && el.razonsocial !== "alexanderskate"
+    )
+    return productos
   }
   const products = await fetchNextPage()
   // console.log(products[0].tallas)
-  const productos = products.filter(
-    (el) =>
-      el.razonsocial !== "fritzsport" && el.razonsocial !== "alexanderskate"
-  )
 
   return (
     <div>
@@ -155,7 +155,7 @@ export default async function Page({ searchParams }: Props) {
                 <ProductFilters />
               </div>
             </div>
-            <ProductGrid products={productos} generoSku={true} />
+            <ProductGrid products={products} generoSku={true} />
             {/* Product grid */}
           </section>
         </main>
